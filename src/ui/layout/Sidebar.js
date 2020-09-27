@@ -2,10 +2,12 @@
 import '../../App.css'
 import { Context } from '../../context'
 import { CoinRow } from '../components/common'
-import { Table, Drawer } from 'antd'
+import { Table, Tabs, Drawer, message, Divider } from 'antd'
 import { getAssets, getTokenDetails, getListedTokens, getWalletData, getStakesData, getListedPools } from '../../client/web3'
 import Web3 from 'web3'
-import { message, Divider } from 'antd';
+import { HR } from '../components/elements'
+//import 'antd/dist/antd.css'
+const { TabPane } = Tabs;
 
 export function openNav() {
     document.getElementById("mySidepanel").style.width = "350px";
@@ -33,7 +35,7 @@ const Sidebar = (props) => {
         window.web3 = new Web3(window.ethereum);
         const account = (await window.web3.eth.getAccounts())[0];
         if (account) {
-           // message.loading('Loading tokens', 3);
+            // message.loading('Loading tokens', 3);
             let assetArray = context.assetArray ? context.assetArray : await getAssets()
             context.setContext({ 'assetArray': assetArray })
             //let assetDetailsArray = context.assetDetailsArray ? context.assetDetailsArray : await getTokenDetails(account, assetArray)
@@ -91,6 +93,31 @@ const Sidebar = (props) => {
         return
     }
 
+    const DrawerContent = (props) => {
+        const context = useContext(Context)
+
+        useEffect(() => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [context.transaction])
+
+
+        function callback(key) {
+            console.log(key);
+        }
+
+        return (
+            <>
+                <h3> {context.walletData.address} </h3>
+                <HR /><br />
+                <Tabs defaultActiveKey="1" onChange={callback}>
+                    <TabPane tab="TOKENS" key="1">
+                        <AssetTable />
+                        <HR />
+                    </TabPane>                   
+                </Tabs>
+            </>
+        );
+    };
 
     const AssetTable = () => {
 
@@ -107,22 +134,24 @@ const Sidebar = (props) => {
         const columns = [
             {
                 render: (record) => (
-                    <div>
+                    <div>                        
                         <CoinRow
                             symbol={record.symbol}
                             name={record.name}
                             balance={record.balance}
                             address={record.address}
-                            size={40} />
+                            size={25} />
                         <br />
+                        
                     </div>
+                    
                 )
             }
         ]
 
         return (
             <div>
-                <Table 
+                <Table
                     dataSource={context.walletData.tokens}
                     showHeader={false}
                     pagination={false}
@@ -137,16 +166,10 @@ const Sidebar = (props) => {
         <div id="mySidepanel" class="sidepanel">
             <div>
                 <button class='closebtn' onClick={closeNav}>X</button>
-                <div class='centerObject'>
-                    <h1>Your Tokens</h1>
-                    
-                    <br /> <br />
-
-                    {connected && <AssetTable />}
-                   
-                    </div>
+                {connected && <DrawerContent />}
             </div>
         </div>
+
     )
 }
 

@@ -207,7 +207,6 @@ const Swap = (props) => {
                 setApprovalSell(true)
             }
         }
-
     }
 
     const unlockSparta = async () => {

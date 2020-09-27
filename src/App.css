@@ -227,12 +227,12 @@ header {
     height: 800px;
     top: 0;
     right: 0;
-    background-color: #e8e8e8;
+    background-color: white;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
-    border-radius: 1.25rem;
-    border: 2px solid var(--spartanRed);
+    border-radius: 0;
+    
 }
 
     .sidepanel a {
